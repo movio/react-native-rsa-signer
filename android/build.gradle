@@ -31,5 +31,6 @@ repositories {
 }
 
 dependencies {
+    compile "com.madgag.spongycastle:prov:1.56.0.0"
     compile 'com.facebook.react:react-native:+'
 }
