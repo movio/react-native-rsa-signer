@@ -1,43 +1,65 @@
 # react-native-rsa-signer
 
-## Getting started
+The RSA Signer generates a 1024 bit RSA key and stores it in
+
+* iOS: Keychain
+* Android (API level >= 18): Keystore
+* Android (API level <= 17): SQLite
+
+Use Case:
+The RSA key pair can be created in the app during user registration, the public key can be exported as X.509 PEM and uploaded to the server. The key pair can later be used to create SHA256withRSA signatures to authenticate the user via self signed JWS token.
+
+## Installation
 
 `$ npm install react-native-rsa-signer --save`
 
-### Mostly automatic installation
-
 `$ react-native link react-native-rsa-signer`
 
-### Manual installation
+This plugin uses Swift. If you don't use Swift in your iOS project, you need to add a `empty.swift` file in your project to activate the Swift compiling.
 
-
-#### iOS
-
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-rsa-signer` and add `RNRsaSigner.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNRsaSigner.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
-
-#### Android
-
-1. Open up `android/app/src/main/java/[...]/MainActivity.java`
-- Add `import co.movio.rsasigner.RNRsaSignerPackage;` to the imports at the top of the file
-- Add `new RNRsaSignerPackage()` to the list returned by the `getPackages()` method
-2. Append the following lines to `android/settings.gradle`:
-```
-include ':react-native-rsa-signer'
-project(':react-native-rsa-signer').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-rsa-signer
-android')
-```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-```
-compile project(':react-native-rsa-signer')
-```
+* open your project in Xcode
+* right click your project's folder in the Project Navigator, select `New File...`
+* select the `Swift File` template, click `Next`
+* set file name to `empty.swift`, make sure your project is enabled in `Targets`, click `Create`
+* remove all contents of file `empty.swift`
+* in the `Build Settings` of your project, select `Always Embed Swift Standard Libraries` and set `Swift Language Version = Swift 3.2`
 
 ## Usage
+
+### Sign a message
 ```javascript
 import RNRsaSigner from 'react-native-rsa-signer';
 
-// TODO: What to do with the module?
-RNRsaSigner;
+
+// drop the current key pair for alias, generate a new pair, store it in the key chain and return the PEM string.
+let pubKeyPem: Promise<String> = RNRsaSigner.regenerateKey(alias);
+
+// retrieve POM string of the public key that is stored in the key chain with the provided alias
+let pubKeyPem: Promise<String> = RNRsaSigner.getPublicKey(alias);
+
+// sign a text with the private key that is stored in the key chain with the provided alias 
+let signature: Promise<String> = RNRsaSigner.sign(alias, "my text to sign");
+
+```
+
+### Validate signature in Java/Scala
+```scala
+// register BouncyCastle JCE provider
+java.security.Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider())
+
+// read user's key, e.g. stored in database, provided by user during sign up
+val key: IntputStream = ???
+val factory = java.security.KeyFactory.getInstance("RSA", "BC")
+val pr = new org.bouncycastle.util.io.pem.PemReader(new java.io.InputStreamReader(key))
+val pubKeySpec = new java.security.spec.X509EncodedKeySpec(pr.readPemObject().getContent())
+val publicKey = factory.generatePublic(pubKeySpec).asInstanceOf[java.security.interfaces.RSAPublicKey]
+
+// validate message
+val message: byte[] = ???
+val signature: byte[] = ???
+
+val sig = java.security.Signature.getInstance("SHA256withRSA");
+sig.initVerify(publicKey);
+sig.update(message);
+val isValid = sig.verify(signature)
 ```
