@@ -69,6 +69,13 @@
 			remoteGlobalIDString = 3D3CD9181DE5FBD800167DC4;
 			remoteInfo = "jschelpers-tvOS";
 		};
+		5BE538FF225197B000723CDC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 32E70E3920626F8300EE5468 /* React.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 83CBBA2D1A601D0E00E9B192;
+			remoteInfo = React;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -160,6 +167,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				5BE53900225197B000723CDC /* PBXTargetDependency */,
 			);
 			name = RNRsaSigner;
 			productName = RCTDataManager;
@@ -186,6 +194,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
@@ -275,6 +284,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5BE53900225197B000723CDC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = React;
+			targetProxy = 5BE538FF225197B000723CDC /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		58B511ED1A9E6C8500147676 /* Debug */ = {
@@ -389,7 +406,7 @@
 				"SWIFT_INCLUDE_PATHS[arch=*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = RNRsaSignerBridge.h;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -410,7 +427,7 @@
 				SKIP_INSTALL = YES;
 				"SWIFT_INCLUDE_PATHS[arch=*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = RNRsaSignerBridge.h;
-				SWIFT_VERSION = 3.0;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
