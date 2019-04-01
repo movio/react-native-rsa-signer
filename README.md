@@ -11,7 +11,13 @@ The RSA key pair can be created in the app during user registration, the public 
 
 ## Installation
 
-`$ npm install react-native-rsa-signer --save`
+Add a reference to this git repo in target `package.json` with a specific version tag, e.g:
+
+```json
+  "react-native-rsa-signer": "git+https://github.com/movio/react-native-rsa-signer.git#1.1.0"
+```
+
+`npm install`
 
 `$ react-native link react-native-rsa-signer`
 
@@ -22,7 +28,7 @@ This plugin uses Swift. If you don't use Swift in your iOS project, you need to 
 * select the `Swift File` template, click `Next`
 * set file name to `empty.swift`, make sure your project is enabled in `Targets`, click `Create`
 * remove all contents of file `empty.swift`
-* in the `Build Settings` of your project, select `Always Embed Swift Standard Libraries` and set `Swift Language Version = Swift 3.2`
+* in the `Build Settings` of your project, select `Always Embed Swift Standard Libraries` and set `Swift Language Version = Swift 4.0`
 
 ## Usage
 
