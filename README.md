@@ -43,7 +43,7 @@ let pubKeyPem: Promise<String> = RNRsaSigner.regenerateKey(alias);
 // retrieve POM string of the public key that is stored in the key chain with the provided alias
 let pubKeyPem: Promise<String> = RNRsaSigner.getPublicKey(alias);
 
-// sign a text with the private key that is stored in the key chain with the provided alias 
+// sign a text with the private key that is stored in the key chain with the provided alias
 let signature: Promise<String> = RNRsaSigner.sign(alias, "my text to sign");
 
 ```
@@ -68,4 +68,20 @@ val sig = java.security.Signature.getInstance("SHA256withRSA");
 sig.initVerify(publicKey);
 sig.update(message);
 val isValid = sig.verify(signature)
+```
+
+## Development Build
+
+`npm install` then open `ios/RNRsaSigner.xcodeproj` in Xcode.
+
+### Common build issues
+
+Build problems to do with `Build input file cannot be found ... third-party/double-conversion-* :
+Seems to happen for Xcode 10+: https://github.com/facebook/react-native/issues/21168
+
+Fix by:
+
+``` shell
+$ cd node_modules/react-native/scripts && ./ios-install-third-party.sh && cd ../../../
+$ cd node_modules/react-native/third-party/glog-0.3.4/ && ../../scripts/ios-configure-glog.sh && cd ../../../../
 ```
