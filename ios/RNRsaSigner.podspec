@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
   s.name         = "RNRsaSigner"
-  s.version      = "1.0.0"
+  s.version      = "1.2.1"
   s.summary      = "RNRsaSigner"
   s.description  = <<-DESC
                   RNRsaSigner
                    DESC
-  s.homepage     = ""
+  s.homepage     = "https://numero.co"
   s.license      = "MIT"
   s.author       = { "author" => "matthias@movio.co" }
   s.platform     = :ios, "7.0"
