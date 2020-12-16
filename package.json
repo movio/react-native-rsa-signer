@@ -20,6 +20,6 @@
   "author": "Matthias Langbein <matthias@movio.co>",
   "license": "MIT",
   "devDependencies": {
-    "react-native": "0.53.0"
+    "react-native": "0.63.4"
   }
 }
