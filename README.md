@@ -14,7 +14,7 @@ The RSA key pair can be created in the app during user registration, the public 
 Add a reference to this git repo in target `package.json` with a specific version tag, e.g:
 
 ```json
-  "react-native-rsa-signer": "git+https://github.com/movio/react-native-rsa-signer.git#1.1.0"
+  "react-native-rsa-signer": "git+https://github.com/movio/react-native-rsa-signer.git#1.3.1"
 ```
 
 `npm install`
