@@ -19,7 +19,11 @@ Add a reference to this git repo in target `package.json` with a specific versio
 
 `npm install`
 
+If you're using React Native version < 0.60:
+
 `$ react-native link react-native-rsa-signer`
+
+Otherwise use `$ cd ios && pod install` as the newer versions support auto linking.
 
 This plugin uses Swift. If you don't use Swift in your iOS project, you need to add a `empty.swift` file in your project to activate the Swift compiling.
 
