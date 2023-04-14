@@ -1,6 +1,6 @@
 {
   "name": "react-native-rsa-signer",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Generate RSA key pair, store in keychain and use for signing",
   "main": "index.js",
   "repository": {
@@ -20,6 +20,6 @@
   "author": "Matthias Langbein <matthias@movio.co>",
   "license": "MIT",
   "devDependencies": {
-    "react-native": "0.63.4"
+    "react-native": "0.71.6"
   }
 }
