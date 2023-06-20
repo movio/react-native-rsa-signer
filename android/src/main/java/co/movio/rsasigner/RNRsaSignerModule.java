@@ -1,4 +1,3 @@
-
 package co.movio.rsasigner;
 
 import java.io.StringWriter;
@@ -26,7 +25,7 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     private static final String LOG_TAG = RNRsaSignerModule.class.getName();
 
     private static final String ALGORITHM = "RSA";
-    private static final int KEY_SIZE = 1024;
+    private static final int KEY_SIZE = 3072;
     private static final String PROVIDER_NAME = BouncyCastleProvider.PROVIDER_NAME;
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
 

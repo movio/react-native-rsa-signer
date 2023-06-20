@@ -4,7 +4,7 @@ import Security
 @objc(RNRsaSigner)
 class RNRsaSigner: NSObject {
 
-  let keySize = 1024
+  let keySize = 3072
 
   @objc func getPublicKey(_ alias: String, resolver resolve: RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) -> Void {
 
@@ -58,7 +58,7 @@ class RNRsaSigner: NSObject {
     guard !data.isEmpty
       else { return reject("no_data", "Data is empty", nil) }
 
-    if let heimdall = Heimdall(tagPrefix: alias, keySize: 1024) {
+    if let heimdall = Heimdall(tagPrefix: alias, keySize: keySize) {
       if let signature = heimdall.sign(data, urlEncode: true) {
         return resolve(signature)
       } else {
