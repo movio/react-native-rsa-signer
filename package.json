@@ -30,6 +30,6 @@
     "react-native": ">= 0.71.0 < 1"
   },
   "devDependencies": {
-    "react-native": "0.71.6"
+    "react-native": "0.72.0"
   }
 }
