@@ -62,7 +62,7 @@ Signs `data` with the private key assosiated with `alias`. Returns the signature
 ## Usage
 
 ### Sign a message
-```javascript
+```typescript
 import RNRsaSigner from 'react-native-rsa-signer';
 
 const alias = 'login-key'

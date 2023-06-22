@@ -3,6 +3,7 @@
   "version": "1.4.0",
   "description": "Generate RSA key pair, store in keychain and use for signing",
   "main": "index.js",
+  "types": "index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/movio/react-native-rsa-signer"
