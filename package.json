@@ -17,8 +17,18 @@
     "encryption",
     "security"
   ],
-  "author": "Matthias Langbein <matthias@movio.co>",
+  "author": {
+    "name": "Aidin Gharibnavaz",
+    "email": "aidin@movio.co"
+  },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/movio/react-native-rsa-signer/issues"
+  },
+  "homepage": "https://github.com/movio/react-native-rsa-signer#readme",
+  "peerDependencies": {
+    "react-native": ">= 0.71.0 < 1"
+  },
   "devDependencies": {
     "react-native": "0.71.6"
   }
