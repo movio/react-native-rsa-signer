@@ -1,5 +1,6 @@
 package co.movio.rsasigner;
 
+import java.lang.RuntimeException;
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -7,6 +8,8 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.Signature;
 
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
 import android.util.Base64;
 import android.util.Log;
 
@@ -16,24 +19,21 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 
-import org.spongycastle.jce.provider.BouncyCastleProvider;
-import org.spongycastle.util.io.pem.PemObject;
-import org.spongycastle.util.io.pem.PemWriter;
 
 public class RNRsaSignerModule extends ReactContextBaseJavaModule {
 
     private static final String LOG_TAG = RNRsaSignerModule.class.getName();
 
-    private static final String ALGORITHM = "RSA";
+    private static final String PROVIDER_NAME = "AndroidKeyStore";
+    private static final String ALGORITHM = KeyProperties.KEY_ALGORITHM_RSA;
     private static final int KEY_SIZE = 3072;
-    private static final String PROVIDER_NAME = BouncyCastleProvider.PROVIDER_NAME;
     private static final String SIGNATURE_ALGORITHM = "SHA256withRSA";
 
-    private final KeyStoreAdapter keyStoreAdapter;
+    private final KeyStoreAdapterJKS keyStoreAdapter;
 
-    RNRsaSignerModule(ReactApplicationContext reactContext, KeyStoreAdapter keyStoreAdapter) {
+    RNRsaSignerModule(ReactApplicationContext reactContext) {
         super(reactContext);
-        this.keyStoreAdapter = keyStoreAdapter;
+        this.keyStoreAdapter = new KeyStoreAdapterJKS();
     }
 
     @Override
@@ -44,12 +44,16 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getPublicKey(String alias, Promise promise) {
         try {
-            KeyPair keyPair = getOrCreateKeyPair(alias);
-            String pem = toPem(keyPair.getPublic());
-            promise.resolve(pem);
+            PublicKey publicKey = this.keyStoreAdapter.getPublicKey(alias);
+            if (publicKey == null) {
+                promise.resolve(null);
+            } else {
+                String pem = toPem(publicKey);
+                promise.resolve(pem);
+            }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to retrieve public key for alias [" + alias + "]: " + e.getMessage(), e);
-            promise.reject("get_public_key", "Failed to access key chain: " + e.getMessage(), e);
+            promise.reject("getPublicKey", "Failed to retrieve public key: " + e.getMessage(), e);
         }
     }
 
@@ -57,7 +61,9 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     public void regenerateKey(String alias, Promise promise) {
         try {
             deleteKeyIfExists(alias);
-            getPublicKey(alias, promise);
+            KeyPair keyPair = generateKeyPair(alias);
+            String pem = toPem(keyPair.getPublic());
+            promise.resolve(pem);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to regenerate key for alias [" + alias + "]: " + e.getMessage(), e);
             promise.reject("delete_key", "Failed to delete key: " + e.getMessage(), e);
@@ -67,11 +73,8 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void sign(String alias, String data, Promise promise) {
         try {
-            KeyPair keyPair = getOrCreateKeyPair(alias);
-            String signature = Base64.encodeToString(sign(keyPair.getPrivate(), data), Base64.URL_SAFE);
-            Log.v(LOG_TAG, "Key: " + toPem(keyPair.getPublic()));
-            Log.v(LOG_TAG, "Data: " + data);
-            Log.v(LOG_TAG, "Signature:" + signature);
+            PrivateKey key = getPrivateKey(alias);
+            String signature = Base64.encodeToString(sign(key, data), Base64.URL_SAFE);
             promise.resolve(signature);
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to sign for alias [" + alias + "]: " + e.getMessage(), e);
@@ -80,21 +83,27 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     }
 
     private void deleteKeyIfExists(String alias) throws Exception {
-        keyStoreAdapter.deleteKeyPair(alias);
+        keyStoreAdapter.deletePrivateKey(alias);
     }
 
-    private KeyPair getOrCreateKeyPair(String alias) throws Exception {
-        KeyPair pair = keyStoreAdapter.getKeyPair(alias);
-        if (pair == null) {
-            pair = generateKeyPair();
-            keyStoreAdapter.setKeyPair(alias, pair);
+    private PrivateKey getPrivateKey(String alias) throws Exception {
+        PrivateKey key = keyStoreAdapter.getPrivateKey(alias);
+        if (key == null) {
+            throw new RuntimeException("Could not find a key for [" + alias + "] alias");
         }
-        return pair;
+        return key;
     }
 
-    private KeyPair generateKeyPair() throws Exception {
+    // This will automatically store the keypair in the Android's Keystore after generation.
+    private KeyPair generateKeyPair(String alias) throws Exception {
         KeyPairGenerator gen = KeyPairGenerator.getInstance(ALGORITHM, PROVIDER_NAME);
-        gen.initialize(KEY_SIZE);
+        gen.initialize(new KeyGenParameterSpec.Builder(
+            alias, KeyProperties.PURPOSE_SIGN | KeyProperties.PURPOSE_VERIFY
+        )
+        .setDigests(KeyProperties.DIGEST_SHA256)
+        .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
+        .setKeySize(KEY_SIZE)
+        .build());
         return gen.genKeyPair();
     }
 
@@ -106,19 +115,7 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     }
 
     private String toPem(PublicKey key) throws Exception {
-        StringWriter stringWriter = new StringWriter();
-        PemWriter pw = new PemWriter(stringWriter);
-        pw.writeObject(new PemObject("RSA PUBLIC KEY", key.getEncoded()));
-        pw.close();
-        return stringWriter.toString();
-    }
-
-    @Override
-    public void onCatalystInstanceDestroy() {
-        try {
-            keyStoreAdapter.close();
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Failed to close KeyStoreAdapter: " + e.getMessage(), e);
-        }
+        String encodedKey = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
+        return "-----BEGIN RSA PUBLIC KEY-----\n" + encodedKey + "\n-----END RSA PUBLIC KEY-----";
     }
 }

@@ -1,6 +1,6 @@
 {
   "name": "react-native-rsa-signer",
-  "version": "1.5.1",
+  "version": "2.0.0",
   "description": "Generate RSA key pair, store in keychain and use for signing",
   "main": "index.js",
   "types": "index.d.ts",
@@ -31,6 +31,6 @@
     "react-native": ">= 0.71.0 < 1"
   },
   "devDependencies": {
-    "react-native": "0.72.3"
+    "react-native": "0.72.4"
   }
 }
