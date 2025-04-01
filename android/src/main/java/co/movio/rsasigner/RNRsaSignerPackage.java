@@ -12,18 +12,11 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.uimanager.ViewManager;
 import com.facebook.react.bridge.JavaScriptModule;
 
-import org.spongycastle.jce.provider.BouncyCastleProvider;
-
 public class RNRsaSignerPackage implements ReactPackage {
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-      KeyStoreAdapter ksAdapter = KeyStoreAdapter.Factory.getInstance(reactContext);
-      return Arrays.<NativeModule>asList(new RNRsaSignerModule(reactContext, ksAdapter));
+      return Arrays.<NativeModule>asList(new RNRsaSignerModule(reactContext));
     }
 
     // Deprecated from RN 0.47

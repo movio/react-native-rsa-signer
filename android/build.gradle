@@ -16,9 +16,9 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 4
-        versionName "1.5.1"
+        targetSdkVersion 34
+        versionCode 5
+        versionName "2.0.0"
     }
     lintOptions {
         abortOnError false
@@ -30,6 +30,5 @@ repositories {
 }
 
 dependencies {
-    implementation "com.madgag.spongycastle:prov:1.58.0.0"
     implementation 'com.facebook.react:react-native:+'
 }

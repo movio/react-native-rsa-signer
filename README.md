@@ -12,11 +12,11 @@ The length of the RSA key is 3072. Currently, the package doesn't allow you to a
 
 It stores the key pair in:
 
-* iOS: Keychain
-* Android (API level >= 18): Keystore
-* Android (API level <= 17): SQLite
+- iOS: Keychain
+- Android (API level >= 18): Keystore
+- Android (API level <= 17): SQLite
 
-The signing algorithm is `SHA256withRSA`.
+The signing algorithm is `SHA256withRSA`, which uses `PKCS#1` for padding.
 
 ## Stability and maintenance
 
@@ -36,46 +36,47 @@ For iOS, you need to `$ cd ios && pod install`.
 
 This plugin uses Swift. If you don't use Swift in your iOS project, you need to add a `empty.swift` file in your project to activate the Swift compiling.
 
-* open your project in Xcode
-* right click your project's folder in the Project Navigator, select `New File...`
-* select the `Swift File` template, click `Next`
-* set file name to `empty.swift`, make sure your project is enabled in `Targets`, click `Create`
-* remove all contents of file `empty.swift`
-* in the `Build Settings` of your project, select `Always Embed Swift Standard Libraries` and set `Swift Language Version = Swift 4.0`
+- open your project in Xcode
+- right click your project's folder in the Project Navigator, select `New File...`
+- select the `Swift File` template, click `Next`
+- set file name to `empty.swift`, make sure your project is enabled in `Targets`, click `Create`
+- remove all contents of file `empty.swift`
+- in the `Build Settings` of your project, select `Always Embed Swift Standard Libraries` and set `Swift Language Version = Swift 4.0`
 
 ## API
 
 `regenerateKey(alias: string): Promise<string>`
 
-Deletes the old key pair (if existed) and generates a new key pair. Returns the public key in `X.506 PEM` format.
+Deletes the key pair assiciated with the give `alias` (if existed) and generates a new key pair. Returns the public key in `X.506 PEM` format.
 
 `alias` is the name for the key pair. You can have multiple key pairs stored. To retrieve one, you need to pass the same `alias`.
 
 `getPublicKey(alias: string): Promise<string>`
 
-Returns the Public Key assotiated with the `alias` in `X.509 PEM` format. If no key pair is existed for this `alias`, it automatically generates and stores a new one.
+Returns the Public Key assotiated with the `alias` in `X.509 PEM` format. Returns null if no key pair is existed for this `alias`.
 
 `sign(alias: string, data: string): Promise<string>`
 
 Signs `data` with the private key assosiated with `alias`. Returns the signature in `base64` format.
+Will throw error if there's no key with this alias.
 
 ## Usage
 
 ### Sign a message
-```typescript
-import RNRsaSigner from 'react-native-rsa-signer';
 
-const alias = 'login-key'
+```typescript
+import RNRsaSigner from "react-native-rsa-signer";
+
+const alias = "login-key";
 
 // drop the current key pair for alias, generate a new pair, store it in the key chain and return the PEM string.
-const pubKeyPem: Promise<string> = RNRsaSigner.regenerateKey(alias)
+const pubKeyPem: Promise<string> = RNRsaSigner.regenerateKey(alias);
 
 // Or you can retrieve and existing key previously stored with the same alias.
 // const pubKeyPem: Promise<string> = RNRsaSigner.getPublicKey(alias);
 
 // sign a text with the private key that is stored in the key chain with the provided alias.
-const signature: Promise<string> = RNRsaSigner.sign(alias, 'my text to sign')
-
+const signature: Promise<string> = RNRsaSigner.sign(alias, "my text to sign");
 ```
 
 ### Validate signature in Java/Scala
@@ -109,12 +110,12 @@ val isValid = sig.verify(signature)
 
 ### Common build issues
 
-Build problems to do with `Build input file cannot be found ... third-party/double-conversion-* :
+Build problems to do with `Build input file cannot be found ... third-party/double-conversion-\* :
 Seems to happen for Xcode 10+: https://github.com/facebook/react-native/issues/21168
 
 Fix by:
 
-``` shell
+```shell
 $ cd node_modules/react-native/scripts && ./ios-install-third-party.sh && cd ../../../
 $ cd node_modules/react-native/third-party/glog-0.3.4/ && ../../scripts/ios-configure-glog.sh && cd ../../../../
 ```
