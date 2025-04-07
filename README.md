@@ -32,8 +32,6 @@ Simply install it using your package manager. For `npm`:
   npm install react-native-rsa-signer
 ```
 
-For iOS, you need to `$ cd ios && pod install`.
-
 This plugin uses Swift. If you don't use Swift in your iOS project, you need to add a `empty.swift` file in your project to activate the Swift compiling.
 
 - open your project in Xcode
