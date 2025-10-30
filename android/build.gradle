@@ -15,8 +15,9 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 34
+        minSdkVersion 24
+        compileSdkVersion = 36
+        targetSdkVersion 36
         versionCode 5
         versionName "2.0.0"
     }
@@ -26,6 +27,7 @@ android {
 }
 
 repositories {
+    google()
     mavenCentral()
 }
 
