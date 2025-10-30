@@ -28,9 +28,9 @@
   },
   "homepage": "https://github.com/movio/react-native-rsa-signer#readme",
   "peerDependencies": {
-    "react-native": ">= 0.71.0 < 1"
+    "react-native": ">= 0.76.0 < 1"
   },
   "devDependencies": {
-    "react-native": "0.72.4"
+    "react-native": "0.82.1"
   }
 }
