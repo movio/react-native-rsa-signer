@@ -47,17 +47,17 @@ This plugin uses Swift. If you don't use Swift in your iOS project, you need to 
 
 `regenerateKey(alias: string): Promise<string>`
 
-Deletes the key pair assiciated with the give `alias` (if existed) and generates a new key pair. Returns the public key in `X.506 PEM` format.
+Deletes the key pair associated with the given `alias` (if existed) and generates a new key pair. Returns the public key in `X.509 PEM` format.
 
 `alias` is the name for the key pair. You can have multiple key pairs stored. To retrieve one, you need to pass the same `alias`.
 
 `getPublicKey(alias: string): Promise<string>`
 
-Returns the Public Key assotiated with the `alias` in `X.509 PEM` format. Returns null if no key pair is existed for this `alias`.
+Returns the Public Key associated with the `alias` in `X.509 PEM` format. Returns null if no key pair is existed for this `alias`.
 
 `sign(alias: string, data: string): Promise<string>`
 
-Signs `data` with the private key assosiated with `alias`. Returns the signature in `base64` format.
+Signs `data` with the private key associated with `alias`. Returns the signature in `base64` format.
 Will throw error if there's no key with this alias.
 
 ## Usage
