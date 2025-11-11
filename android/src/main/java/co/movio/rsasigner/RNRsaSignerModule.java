@@ -1,7 +1,5 @@
 package co.movio.rsasigner;
 
-import java.lang.RuntimeException;
-import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
@@ -106,7 +104,7 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
         .build());
 
         Log.d(LOG_TAG, "New key pair generated for alias [" + alias + "]");
-        
+
         return gen.genKeyPair();
     }
 

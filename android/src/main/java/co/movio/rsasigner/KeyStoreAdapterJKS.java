@@ -32,12 +32,11 @@ class KeyStoreAdapterJKS {
         PrivateKey result = null;
         if (keyStore != null) {
             PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, null);
-
-            Log.d(LOG_TAG, "******** Public key=" + entry.getCertificate().getPublicKey().toString());
-
-            result = entry.getPrivateKey();
-            if (result != null) {
-                Log.d(LOG_TAG, "found key pair for alias [" + alias + "]");
+            if (entry != null) {
+                result = entry.getPrivateKey();
+                if (result != null) {
+                    Log.d(LOG_TAG, "found key pair for alias [" + alias + "]");
+                }
             }
         }
         Log.d(LOG_TAG, "<< getKeyPair([" + alias + "])");
@@ -50,9 +49,11 @@ class KeyStoreAdapterJKS {
 
         if (keyStore != null) {
             PrivateKeyEntry entry = (PrivateKeyEntry) keyStore.getEntry(alias, null);
-            result = entry.getCertificate().getPublicKey();
-            if (result != null) {
-                Log.d(LOG_TAG, "found key pair for alias [" + alias + "]");
+            if (entry != null) {
+                result = entry.getCertificate().getPublicKey();
+                if (result != null) {
+                    Log.d(LOG_TAG, "found key pair for alias [" + alias + "]");
+                }
             }
         }
 
