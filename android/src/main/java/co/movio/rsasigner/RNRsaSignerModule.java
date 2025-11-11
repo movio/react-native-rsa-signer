@@ -46,14 +46,14 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
         try {
             PublicKey publicKey = this.keyStoreAdapter.getPublicKey(alias);
             if (publicKey == null) {
-                promise.resolve(null);
+                regenerateKey(alias, promise);
             } else {
                 String pem = toPem(publicKey);
                 promise.resolve(pem);
             }
         } catch (Exception e) {
             Log.e(LOG_TAG, "Failed to retrieve public key for alias [" + alias + "]: " + e.getMessage(), e);
-            promise.reject("getPublicKey", "Failed to retrieve public key: " + e.getMessage(), e);
+            promise.reject("get_public_key", "Failed to access key chain: " + e.getMessage(), e);
         }
     }
 
@@ -89,7 +89,7 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
     private PrivateKey getPrivateKey(String alias) throws Exception {
         PrivateKey key = keyStoreAdapter.getPrivateKey(alias);
         if (key == null) {
-            throw new RuntimeException("Could not find a key for [" + alias + "] alias");
+            key = generateKeyPair(alias).getPrivate();
         }
         return key;
     }
@@ -104,6 +104,9 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
         .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
         .setKeySize(KEY_SIZE)
         .build());
+
+        Log.d(LOG_TAG, "New key pair generated for alias [" + alias + "]");
+        
         return gen.genKeyPair();
     }
 
@@ -118,4 +121,5 @@ public class RNRsaSignerModule extends ReactContextBaseJavaModule {
         String encodedKey = Base64.encodeToString(key.getEncoded(), Base64.DEFAULT);
         return "-----BEGIN RSA PUBLIC KEY-----\n" + encodedKey + "\n-----END RSA PUBLIC KEY-----";
     }
+
 }
