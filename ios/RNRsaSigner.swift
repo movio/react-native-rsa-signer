@@ -27,7 +27,7 @@ class RNRsaSigner: NSObject {
         result.append("-----END PUBLIC KEY-----")
         return resolve(result)
       } else {
-        return reject("get_public_key", "Failed to get X.509 public key", nil)
+        return resolve(nil)
       }
     } else {
       return reject("init_heimdall", "Failed to init Heimdall", nil)
